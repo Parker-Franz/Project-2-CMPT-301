@@ -87,17 +87,119 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    fringe = util.Stack()
+
+    fringe.push((None, problem.getStartState(), None, 0))
+    visited = dict()
+
+    def addSuccesorsToFringe(start, cost):
+        for next, action, added_cost in problem.getSuccessors(start):
+            if hash(next) not in visited:
+                fringe.push((start, next, action, cost + added_cost))
+
+    def pathTo(end):
+        state, action = visited[hash(end)]
+        actions = []
+
+        while action is not None:
+            actions.append(action)
+            state, action = visited[hash(state)]
+
+        return actions[::-1]
+
+    while not fringe.isEmpty():
+        start, next, action, cost = fringe.pop()
+
+        if hash(next) in visited:
+            continue
+
+        visited[hash(next)] = (start, action)
+
+        if problem.isGoalState(next):
+            return pathTo(next)
+
+        addSuccesorsToFringe(next, cost)
+
+    return []
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    fringe = util.Queue()
+
+    fringe.push((None, problem.getStartState(), None, 0))
+    visited = dict()
+
+    def addSuccesorsToFringe(start, cost):
+        for next, action, added_cost in problem.getSuccessors(start):
+            if hash(next) not in visited:
+                fringe.push((start, next, action, cost + added_cost))
+
+    def pathTo(end):
+        state, action = visited[hash(end)]
+        actions = []
+
+        while action is not None:
+            actions.append(action)
+            state, action = visited[hash(state)]
+
+        return actions[::-1]
+
+    while not fringe.isEmpty():
+        start, next, action, cost = fringe.pop()
+
+        if hash(next) in visited:
+            continue
+
+        visited[hash(next)] = (start, action)
+
+        if problem.isGoalState(next):
+            return pathTo(next)
+
+        addSuccesorsToFringe(next, cost)
+
+    return []
 
 def lowestCostFirst(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    def fringeFn(item):
+        state_s, state_e, action, cost = item
+        return cost
+    fringe = util.PriorityQueueWithFunction(fringeFn)
+
+    fringe.push((None, problem.getStartState(), None, 0))
+    visited = dict()
+
+    def addSuccesorsToFringe(start, cost):
+        for next, action, added_cost in problem.getSuccessors(start):
+            if hash(next) not in visited:
+                fringe.push((start, next, action, cost + added_cost))
+
+    def pathTo(end):
+        state, action = visited[hash(end)]
+        actions = []
+
+        while action is not None:
+            actions.append(action)
+            state, action = visited[hash(state)]
+
+        return actions[::-1]
+
+    while not fringe.isEmpty():
+        start, next, action, cost = fringe.pop()
+
+        if hash(next) in visited:
+            continue
+
+        visited[hash(next)] = (start, action)
+
+        if problem.isGoalState(next):
+            return pathTo(next)
+
+        addSuccesorsToFringe(next, cost)
+
+    return []
 
 def nullHeuristic(state, problem=None):
     """
