@@ -123,42 +123,20 @@ def depthFirstSearch(problem):
     return []
 
 def breadthFirstSearch(problem):
-    """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    fringe = util.Queue()
-
-    fringe.push((None, problem.getStartState(), None, 0))
-    visited = dict()
-
-    def addSuccesorsToFringe(start, cost):
-        for next, action, added_cost in problem.getSuccessors(start):
-            if hash(next) not in visited:
-                fringe.push((start, next, action, cost + added_cost))
-
-    def pathTo(end):
-        state, action = visited[hash(end)]
-        actions = []
-
-        while action is not None:
-            actions.append(action)
-            state, action = visited[hash(state)]
-
-        return actions[::-1]
-
-    while not fringe.isEmpty():
-        start, next, action, cost = fringe.pop()
-
-        if hash(next) in visited:
-            continue
-
-        visited[hash(next)] = (start, action)
-
-        if problem.isGoalState(next):
-            return pathTo(next)
-
-        addSuccesorsToFringe(next, cost)
-
-    return []
+    fringe = [] 
+    visited = []
+    fringe.append([problem.getStartState(), []])
+    print(problem.getStartState())
+    while len(fringe) >0:  
+        current,direction = fringe.pop()
+        if current not in visited:
+            visited.append(current)
+            if (problem.isGoalState(current)):   
+                return direction
+            for coordinates,  directions,  cost in problem.getSuccessors(current): 
+        
+                fringe.insert(0, (coordinates,direction+[directions]))
+    return visited
 
 def lowestCostFirst(problem):
     """Search the node of least total cost first."""
