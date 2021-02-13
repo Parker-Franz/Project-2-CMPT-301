@@ -85,43 +85,28 @@ def depthFirstSearch(problem):
     print("Start:", problem.getStartState())
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
+    instead of problem.getStartState() use graph.getStartState()
     """
-    "*** YOUR CODE HERE ***"
-    fringe = util.Stack()
-
-    fringe.push((None, problem.getStartState(), None, 0))
-    visited = dict()
-
-    def addSuccesorsToFringe(start, cost):
-        for next, action, added_cost in problem.getSuccessors(start):
-            if hash(next) not in visited:
-                fringe.push((start, next, action, cost + added_cost))
-
-    def pathTo(end):
-        state, action = visited[hash(end)]
-        actions = []
-
-        while action is not None:
-            actions.append(action)
-            state, action = visited[hash(state)]
-
-        return actions[::-1]
-
-    while not fringe.isEmpty():
-        start, next, action, cost = fringe.pop()
-
-        if hash(next) in visited:
-            continue
-
-        visited[hash(next)] = (start, action)
-
-        if problem.isGoalState(next):
-            return pathTo(next)
-
-        addSuccesorsToFringe(next, cost)
-
-    return []
-
+    print("Start:", problem.getStartState())
+    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
+    print("Start's successors:", problem.getSuccessors(problem.getStartState()))
+    fringe = [] 
+    visited = []
+    fringe.append([problem.getStartState(), []])
+    print(problem.getStartState())
+    while len(fringe) >0:  
+        current,direction = fringe.pop()
+        if current not in visited:
+            visited.append(current)
+            if (problem.isGoalState(current)):   
+                return direction
+            else:
+                for coordinates,  directions,  cost in problem.getSuccessors(current): 
+                    temp = direction+[directions]
+                    if (coordinates, temp) not in visited: 
+                        fringe.append((coordinates,temp))
+                    
+                    
 def breadthFirstSearch(problem):
     fringe = [] 
     visited = []
@@ -140,45 +125,21 @@ def breadthFirstSearch(problem):
 
 def lowestCostFirst(problem):
     """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
-    def fringeFn(item):
-        state_s, state_e, action, cost = item
-        return cost
-    fringe = util.PriorityQueueWithFunction(fringeFn)
-
-    fringe.push((None, problem.getStartState(), None, 0))
-    visited = dict()
-
-    def addSuccesorsToFringe(start, cost):
-        for next, action, added_cost in problem.getSuccessors(start):
-            if hash(next) not in visited:
-                fringe.push((start, next, action, cost + added_cost))
-
-    def pathTo(end):
-        state, action = visited[hash(end)]
-        actions = []
-
-        while action is not None:
-            actions.append(action)
-            state, action = visited[hash(state)]
-
-        return actions[::-1]
-
-    while not fringe.isEmpty():
-        start, next, action, cost = fringe.pop()
-
-        if hash(next) in visited:
-            continue
-
-        visited[hash(next)] = (start, action)
-
-        if problem.isGoalState(next):
-            return pathTo(next)
-
-        addSuccesorsToFringe(next, cost)
-
-    return []
-
+    fringe = util.PriorityQueue()
+    visited = []
+    fringe.push([problem.getStartState(), [], 0], 0)
+    print(problem.getStartState())
+    while not fringe.isEmpty():  
+        current,direction, cost = fringe.pop()
+        if current not in visited:
+            visited.append(current)
+            if (problem.isGoalState(current)):   
+                return direction
+            for coordinates,  directions,  costs in problem.getSuccessors(current): 
+                
+                fringe.push((coordinates,direction+[directions], cost+costs), cost+costs)
+    return visited
+    
 def nullHeuristic(state, problem=None):
     """
     A heuristic function estimates the cost from the current state to the nearest
@@ -187,46 +148,20 @@ def nullHeuristic(state, problem=None):
     return 0
 
 def aStarSearch(problem, heuristic=nullHeuristic):
-    """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-
-    def fringeFn(item):
-        state_s, state_e, action, cost = item
-        return cost + heuristic(state_e, problem=problem)
-    fringe = util.PriorityQueueWithFunction(fringeFn)
-    fringe.push((None, problem.getStartState(), None, 0))
-    visited = dict()
-
-    def addSuccesorsToFringe(start, cost):
-        for next, action, added_cost in problem.getSuccessors(start):
-            if hash(next) not in visited:
-                fringe.push((start, next, action, cost + added_cost))
-
-    def pathTo(end):
-        state, action = visited[hash(end)]
-        actions = []
-
-        while action is not None:
-            actions.append(action)
-            state, action = visited[hash(state)]
-
-        return actions[::-1]
-
-    while not fringe.isEmpty():
-        start, next, action, cost = fringe.pop()
-
-        if hash(next) in visited:
-            continue
-
-        visited[hash(next)] = (start, action)
-
-        if problem.isGoalState(next):
-            return pathTo(next)
-
-        addSuccesorsToFringe(next, cost)
-
-    return []
-
+    fringe = util.PriorityQueue()
+    visited = []
+    fringe.push([problem.getStartState(), [], 0], 0)
+    print(problem.getStartState())
+    while not fringe.isEmpty():  
+        current,direction, cost = fringe.pop()
+        if current not in visited:
+            visited.append(current)
+            if (problem.isGoalState(current)):   
+                return direction
+            for coordinates,  directions,  costs in problem.getSuccessors(current): 
+                
+                fringe.push((coordinates,direction+[directions], cost+costs+heuristic(coordinates, problem)), cost+costs+heuristic(coordinates, problem))
+    return visited
 
 # Abbreviations
 bfs = breadthFirstSearch

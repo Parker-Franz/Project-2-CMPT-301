@@ -303,12 +303,7 @@ class CornersProblem(search.SearchProblem):
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        corners = self.corners
-        current = state.coordinates()
-        for x in corners:
-            if x == current:
-                return True
-        return False
+        return state[1].count() == 0
 
 
 
@@ -324,18 +319,15 @@ class CornersProblem(search.SearchProblem):
         """
 
         successors = []
-        for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
-            # Add a successor state to the successor list if the action is legal
-            # Here's a code snippet for figuring out whether a new position hits a wall:
-            x,y = state
-            dx, dy = Actions.directionToVector(action)
+        self._expanded += 1 # DO NOT CHANGE
+        for direction in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
+            x,y = state[0]
+            dx, dy = Actions.directionToVector(direction)
             nextx, nexty = int(x + dx), int(y + dy)
             if not self.walls[nextx][nexty]:
-                nextState = (nextx, nexty)
-                cost = self.costFn(nextState)
-                successors.append( ( nextState, action, cost) )
-
-        self._expanded += 1 # DO NOT CHANGE
+                nextFood = state[1].copy()
+                nextFood[nextx][nexty] = False
+                successors.append( ( ((nextx, nexty), nextFood), direction, 1) )
         return successors
 
     def getCostOfActions(self, actions):
