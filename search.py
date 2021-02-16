@@ -93,7 +93,6 @@ def depthFirstSearch(problem):
     fringe = [] 
     visited = []
     fringe.append([problem.getStartState(), []])
-    print(problem.getStartState())
     while len(fringe) >0:  
         current,direction = fringe.pop()
         if current not in visited:
@@ -111,7 +110,6 @@ def breadthFirstSearch(problem):
     fringe = [] 
     visited = []
     fringe.append([problem.getStartState(), []])
-    print(problem.getStartState())
     while len(fringe) >0:  
         current,direction = fringe.pop()
         if current not in visited:
@@ -128,7 +126,6 @@ def lowestCostFirst(problem):
     fringe = util.PriorityQueue()
     visited = []
     fringe.push([problem.getStartState(), [], 0], 0)
-    print(problem.getStartState())
     while not fringe.isEmpty():  
         current,direction, cost = fringe.pop()
         if current not in visited:
@@ -151,7 +148,6 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     fringe = util.PriorityQueue()
     visited = []
     fringe.push([problem.getStartState(), [], 0], 0)
-    print(problem.getStartState())
     while not fringe.isEmpty():  
         current,direction, cost = fringe.pop()
         if current not in visited:

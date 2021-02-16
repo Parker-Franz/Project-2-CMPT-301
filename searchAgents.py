@@ -296,14 +296,16 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        return self.startingGameState.getPacmanPosition()
+        return (self.startingGameState.getPacmanPosition(), self.corners)
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        return state[1].count() == 0
+        self.position,visitedCorners = state
+        goal = (visitedCorners == [True, True, True, True])
+        return goal
 
     def getSuccessors(self, state):
         """
@@ -317,15 +319,19 @@ class CornersProblem(search.SearchProblem):
         """
 
         successors = []
-        self._expanded += 1 # DO NOT CHANGE
-        for direction in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
-            x,y = state[0]
-            dx, dy = Actions.directionToVector(direction)
+        currentPosition, corners = state
+        for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
+            x, y = currentPosition
+            dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
             if not self.walls[nextx][nexty]:
-                nextFood = state[1].copy()
-                nextFood[nextx][nexty] = False
-                successors.append( ( ((nextx, nexty), nextFood), direction, 1) )
+                nextPosition = (nextx, nexty)
+                nextCorners = tuple(c for c in corners if c != (nextx, nexty))
+                nextState = (nextPosition, nextCorners)
+                cost = 1
+                successors.append((nextState, action, cost)) 
+        
+        self._expanded += 1 # DO NOT CHANGE
         return successors
 
     def getCostOfActions(self, actions):
