@@ -14,6 +14,7 @@
 
 import sys
 import re
+from typing import Type
 import testClasses
 import textwrap
 
@@ -375,6 +376,8 @@ def getStatesFromPath(start, path):
     curr = start
     for a in path:
         x,y = curr
+        print(path)
+        print(type(path))
         dx, dy = Actions.directionToVector(a)
         curr = (int(x + dx), int(y + dy))
         vis.append(curr)

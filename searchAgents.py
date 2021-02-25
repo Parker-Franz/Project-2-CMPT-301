@@ -34,6 +34,7 @@ description for details.
 Good luck and happy searching!
 """
 
+from typing import Counter
 from game import Directions
 from game import Agent
 from game import Actions
@@ -303,9 +304,9 @@ class CornersProblem(search.SearchProblem):
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        self.position,visitedCorners = state
-        goal = (visitedCorners == [True, True, True, True])
-        return goal
+        currentPosition, visited = state
+        
+        return visited[0] and visited[1] and visited[2] and visited[3] 
 
     def getSuccessors(self, state):
         """
@@ -329,7 +330,7 @@ class CornersProblem(search.SearchProblem):
                 nextCorners = tuple(c for c in corners if c != (nextx, nexty))
                 nextState = (nextPosition, nextCorners)
                 cost = 1
-                successors.append((nextState, action, cost)) 
+                successors.append(nextState, action, cost)
         
         self._expanded += 1 # DO NOT CHANGE
         return successors
