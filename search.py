@@ -123,19 +123,16 @@ def lowestCostFirst(problem):
     """Search the node of least total cost first."""
     fringe = util.PriorityQueue()
     visited = []
-    fringe.push([problem.getStartState(), []], 0)
-    while fringe:
-        node, actions = fringe.pop()
-        if not node in visited:
-            visited.append(node)
-            if problem.isGoalState(node):
-                return actions
-            for successor in problem.getSuccessors(node):
-                coordinate, direction, cost = successor
-                nextActions = actions + [direction]
-                nextCost = problem.getCostOfActions(nextActions)
-                fringe.push((coordinate, nextActions), nextCost)
-    return []
+    fringe.push([problem.getStartState(), [], 0], 0)
+    while not fringe.isEmpty():  
+        current, direction, cost = fringe.pop()
+        if current not in visited:
+            visited.append(current)
+            if (problem.isGoalState(current)):   
+                return direction
+            for coordinates,  directions,  costs in problem.getSuccessors(current): 
+                fringe.push((coordinates, direction+[directions], cost+costs), cost+costs)
+    return visited
     
 def nullHeuristic(state, problem=None):
     """
